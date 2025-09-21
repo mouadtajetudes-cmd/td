@@ -2,7 +2,6 @@
 
 namespace toubilib\core\domain\entities\praticien;
 
-use Respect\Validation\Rules\Space;
 
 class Praticien
 {
