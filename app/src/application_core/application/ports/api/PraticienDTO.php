@@ -9,7 +9,8 @@ public string $nom;
 public string $prenom; 
 public string $ville; 
 public string $email; 
-public string $specialite;
+public string $specialite_lib;
+public string $specialite_desc;
 
 public function __construct(
  string $id,
@@ -17,7 +18,8 @@ public function __construct(
  string $prenom, 
  string $ville, 
  string $email, 
- string $specialite
+ string $specialite_lib,
+ string $specialite_desc
 )
 {
     $this->id = $id;
@@ -25,7 +27,8 @@ public function __construct(
     $this->prenom = $prenom;
     $this->ville = $ville;
     $this->email = $email;
-    $this->specialite = $specialite;
+    $this->specialite_lib = $specialite_lib;
+    $this->specialite_desc = $specialite_desc;
 }
 
 

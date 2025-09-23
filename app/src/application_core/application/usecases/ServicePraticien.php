@@ -25,7 +25,8 @@ class ServicePraticien implements ServicePraticienInterface
                 $prep->getPrenom(),
                 $prep->getVille(),
                 $prep->getEmail(),
-                $prep->getSpecialite()->getLibelle()
+                $prep->getSpecialite()->getLibelle(),
+                $prep->getSpecialite()->getDescription()
             );
         }
         return $praticiens;
