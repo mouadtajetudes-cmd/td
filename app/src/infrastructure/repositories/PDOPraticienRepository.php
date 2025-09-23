@@ -39,5 +39,31 @@ class PDOPraticienRepository implements PraticienRepositoryInterface
         }
         return $praticiens;
     }
+    public function findPraticien(string $id_p) : Praticien{
+     $statement = $this->pdo->prepare("SELECT p.id, p.nom, p.prenom, p.ville, p.email, s.id as sp_id , s.libelle as sp_libelle
+         , s.description as sp_description 
+         from praticien p
+        join specialite s on p.specialite_id = s.id
+        where p.nom = :pid
+        ");
+        
+        $statement->execute([":pid"=>$id_p]);
+        $results=$statement->fetch(\PDO::FETCH_ASSOC);
+        $praticien = new Praticien(
+            $results['id'],
+            $results['nom'],
+            $results['prenom'],
+            $results['ville'],
+            $results['email'],
+            new Specialite(
+                $results['sp_id'],
+                $results['sp_libelle'],
+                $results['sp_description']
+            )
+
+            );
+       
+        return $praticien;
+    }
  
 }
