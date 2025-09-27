@@ -4,7 +4,8 @@ namespace toubilib\core\application\ports\api;
 interface ServicePraticienInterface{
 
     public function ListerPraticiens(): array;
-    public function ListerPraticien(string $nom): array;
+    public function ListerPraticien(string $nom): PraticienDTO;
+    public function ListerPraticienId(string $id): PraticienDTO;
 }
 
 

@@ -2,6 +2,7 @@
 
 namespace toubilib\infra\repositories;
 
+use Exception;
 use toubilib\core\application\ports\spi\repositoryinterfaces\PraticienRepositoryInterface;
 use toubilib\core\domain\entities\praticien\Praticien;
 use toubilib\core\domain\entities\praticien\Specialite;
@@ -49,6 +50,9 @@ class PDOPraticienRepository implements PraticienRepositoryInterface
         
         $statement->execute([":pid"=>$id_p]);
         $results=$statement->fetch(\PDO::FETCH_ASSOC);
+        if(!$results){
+           throw new Exception("Praticien not found");
+        }        
         $praticien = new Praticien(
             $results['id'],
             $results['nom'],
@@ -64,6 +68,36 @@ class PDOPraticienRepository implements PraticienRepositoryInterface
             );
        
         return $praticien;
+        
+    }
+    public function findPraticienId(string $id_p) : Praticien{
+     $statement = $this->pdo->prepare("SELECT p.id, p.nom, p.prenom, p.ville, p.email, s.id as sp_id , s.libelle as sp_libelle
+         , s.description as sp_description 
+         from praticien p
+        join specialite s on p.specialite_id = s.id
+        where p.id = :pid
+        ");
+        
+        $statement->execute([":pid"=>$id_p]);
+        $results=$statement->fetch(\PDO::FETCH_ASSOC);
+        if(!$results){
+           throw new Exception("Praticien not found");
+        }        
+        $praticien = new Praticien(
+            $results['id'],
+            $results['nom'],
+            $results['prenom'],
+            $results['ville'],
+            $results['email'],
+            new Specialite(
+                $results['sp_id'],
+                $results['sp_libelle'],
+                $results['sp_description']
+            )
+            );
+       
+        return $praticien;
+        
     }
  
 }

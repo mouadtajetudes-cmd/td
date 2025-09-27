@@ -18,9 +18,11 @@ class ServicePraticien implements ServicePraticienInterface
     public function ListerPraticiens(): array {
         $praticiensrepos = $this->praticienRepository->GetAllPraticiens();
         $praticiens = [];
+        $count=1;
         foreach ($praticiensrepos as $prep){
             $praticiens [] = new PraticienDTO(
-                $prep->getId(),
+                // $count,
+                 $prep->getId(),
                 $prep->getNom(),
                 $prep->getPrenom(),
                 $prep->getVille(),
@@ -28,14 +30,27 @@ class ServicePraticien implements ServicePraticienInterface
                 $prep->getSpecialite()->getLibelle(),
                 $prep->getSpecialite()->getDescription()
             );
+            $count++;
         }
         return $praticiens;
     	
     }
-    public function ListerPraticien(string $nom) : array{
+    public function ListerPraticien(string $nom) : PraticienDTO{
          $prep = $this->praticienRepository->findPraticien($nom);
-        $praticienDTO = [];
-         $praticienDTO [] = new PraticienDTO(
+         $praticienDTO = new PraticienDTO(
+                 $prep->getId(),
+                $prep->getNom(),
+                $prep->getPrenom(),
+                $prep->getVille(),
+                $prep->getEmail(),
+                $prep->getSpecialite()->getLibelle(),
+                $prep->getSpecialite()->getDescription()
+         );
+         return $praticienDTO;
+    }
+    public function ListerPraticienId(string $id) : PraticienDTO{
+         $prep = $this->praticienRepository->findPraticienId($id);
+         $praticienDTO = new PraticienDTO(
                  $prep->getId(),
                 $prep->getNom(),
                 $prep->getPrenom(),
