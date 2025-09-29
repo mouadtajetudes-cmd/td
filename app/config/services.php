@@ -47,14 +47,19 @@ return [
         return new PDOPraticienRepository($c->get('praticien_db'));
     },
     RendezVousRepositoryInterface::class => static function ($a){
-        return new PDORendezVousRepository($a->get('rdv_db'),$a->get(PraticienRepositoryInterface::class));
+        return new PDORendezVousRepository(
+            $a->get('rdv_db'),
+            $a->get(PraticienRepositoryInterface::class)
+        );
     },
 
-    // Service
     ServicePraticienInterface::class => static function ($c) {
         return new ServicePraticien($c->get(PraticienRepositoryInterface::class));
     },
     ServiceRendezVousInterface::class => static function ($c) {
-        return new ServiceRendezVous($c->get(RendezVousRepositoryInterface::class));
+        return new ServiceRendezVous(
+            $c->get(RendezVousRepositoryInterface::class),
+            $c->get(PraticienRepositoryInterface::class) 
+        );
     },
 ];
