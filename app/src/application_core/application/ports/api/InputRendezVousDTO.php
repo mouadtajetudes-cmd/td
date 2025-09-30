@@ -8,7 +8,7 @@ class InputRendezVousDTO
     public string $patient_id;
     public string $date_heure;
     public string $motif_visite;
-    public int $duree; // en minutes
+    public int $duree; 
 
     public function __construct(
         string $praticien_id,

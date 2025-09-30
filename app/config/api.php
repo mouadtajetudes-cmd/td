@@ -12,42 +12,42 @@ use toubilib\core\application\ports\api\ServicePraticienInterface;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 
 return [
-    ListerPraticiensAction::class => static function ($c) {
+    ListerPraticiensAction::class =>  function ($c) {
         return new ListerPraticiensAction(
             $c->get(ServicePraticienInterface::class)
         );
     },
-    ListerPraticienAction::class => static function ($c){
+    ListerPraticienAction::class =>  function ($c){
         return new ListerPraticienAction( 
             $c->get(ServicePraticienInterface::class)
         );
     },
-    ListerPraticienIdAction::class => static function ($c){
+    ListerPraticienIdAction::class =>  function ($c){
         return new ListerPraticienIdAction( 
             $c->get(ServicePraticienInterface::class)
         );
     },
-    ListerRendezVousAction::class => static function ($c) {
+    ListerRendezVousAction::class =>  function ($c) {
         return new ListerRendezVousAction(
             $c->get(ServiceRendezVousInterface::class)
         );
     },
-    ListerRendezVousActionID::class => static function ($c) {
+    ListerRendezVousActionID::class =>  function ($c) {
         return new ListerRendezVousActionID(
             $c->get(ServiceRendezVousInterface::class)
         );
     },
-    CreerRendezVousAction::class => static function ($c) {
+    CreerRendezVousAction::class =>  function ($c) {
         return new CreerRendezVousAction(
             $c->get(ServiceRendezVousInterface::class)
         );
     },
-    AnnulerRendezVousAction::class => static function ($c) {
+    AnnulerRendezVousAction::class =>  function ($c) {
         return new AnnulerRendezVousAction(
             $c->get(ServiceRendezVousInterface::class)
         );
     },
-    ConsulterAgendaAction::class => static function ($c) {
+    ConsulterAgendaAction::class =>  function ($c) {
         return new ConsulterAgendaAction(
             $c->get(ServiceRendezVousInterface::class)
         );

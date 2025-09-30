@@ -43,20 +43,20 @@ return [
     },
 
     // Repository
-    PraticienRepositoryInterface::class => static function ($c) {
+    PraticienRepositoryInterface::class =>  function ($c) {
         return new PDOPraticienRepository($c->get('praticien_db'));
     },
-    RendezVousRepositoryInterface::class => static function ($a){
+    RendezVousRepositoryInterface::class =>  function ($a){
         return new PDORendezVousRepository(
             $a->get('rdv_db'),
             $a->get(PraticienRepositoryInterface::class)
         );
     },
 
-    ServicePraticienInterface::class => static function ($c) {
+    ServicePraticienInterface::class =>  function ($c) {
         return new ServicePraticien($c->get(PraticienRepositoryInterface::class));
     },
-    ServiceRendezVousInterface::class => static function ($c) {
+    ServiceRendezVousInterface::class =>  function ($c) {
         return new ServiceRendezVous(
             $c->get(RendezVousRepositoryInterface::class),
             $c->get(PraticienRepositoryInterface::class) 

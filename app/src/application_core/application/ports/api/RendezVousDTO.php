@@ -8,7 +8,6 @@ class RendezVousDTO{
     public string $praticien_id;
     public string $praticien_url;
     public string $patient_id;
-    public string $patient_email;
     public string $status;
     public string $duree;
     public string $date_heure_fin;
@@ -21,7 +20,6 @@ class RendezVousDTO{
         string $praticien_id,
         string $praticien_url, 
         string $patient_id,
-        string $patient_email,
         string $status,
         string $duree,
         string $date_heure_fin,
@@ -33,7 +31,6 @@ class RendezVousDTO{
     $this->praticien_id=$praticien_id;
     $this->praticien_url=$praticien_url;
     $this->patient_id=$patient_id;
-    $this->patient_email=$patient_email;
     $this->status=$status;
     $this->duree=$duree;
     $this->date_heure_fin=$date_heure_fin;

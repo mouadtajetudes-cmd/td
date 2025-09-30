@@ -27,7 +27,6 @@ class CreerRendezVousAction
             $response->getBody()->write(json_encode($rdvDTO));
             return $response
                 ->withHeader('Content-Type', 'application/json')
-                ->withHeader('Location', '/rdvs/' . $rdvDTO->id)
                 ->withStatus(201);
         } catch (Exception $e) {
             $response->getBody()->write(json_encode([

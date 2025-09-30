@@ -10,6 +10,8 @@ use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\PraticienRepositoryInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\RendezVousRepositoryInterface;
 use toubilib\core\domain\entities\praticien\RendezVous;
+use Ramsey\Uuid\Uuid;
+
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -86,9 +88,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $this->verifierDisponibilite($dto->praticien_id, $dateDebut, $dateFin);
 
+        $uuid = Uuid::uuid4();
 
         $rdv = new RendezVous(
-            uniqid('rdv_'), // id temp
+            $uuid,
             $praticien,
             $dto->patient_id,
             '', 
@@ -109,7 +112,6 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $rdvSaved->getPraticien()->getNom(),
             "http://localhost:6080/prat/id/" . $rdvSaved->getPraticien()->getId(),
             $rdvSaved->getPatientId(),
-            $rdvSaved->getPatientEmail(),
             $rdvSaved->getStatus(),
             $rdvSaved->getDuree(),
             $rdvSaved->getDateHF(),
