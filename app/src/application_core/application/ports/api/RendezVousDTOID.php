@@ -10,6 +10,7 @@ class RendezVousDTOID{
     public string $patient_email;
     public string $status;
     public string $duree;
+    public string $date_heure_debut; 
     public string $date_heure_fin;
     public string $date_creation;
     public string $motif_visite;
@@ -22,6 +23,7 @@ class RendezVousDTOID{
         string $patient_email,
         string $status,
         string $duree,
+        string $date_heure_debut,
         string $date_heure_fin,
         string $date_creation,
         string $motif_visite,
@@ -33,6 +35,7 @@ class RendezVousDTOID{
     $this->patient_email=$patient_email;
     $this->status=$status;
     $this->duree=$duree;
+    $this->date_heure_debut=$date_heure_debut;
     $this->date_heure_fin=$date_heure_fin;
     $this->date_creation=$date_creation;
     $this->motif_visite=$motif_visite;
