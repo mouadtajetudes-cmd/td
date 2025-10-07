@@ -48,25 +48,26 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         return $rdv;
     }
 
-    public function ListerRDVID(string $pid): array
-    {
-        $rdvs = $this->rendezVousRepository->GetRdvsbyPrat($pid);
-        $rdv = [];
-        foreach ($rdvs as $element) {
-            $rdv[] = new RendezVousDTOID(
-                $element->getId(),
-                $element->getPraticien()->getId(),
-                $element->getPatientId(),
-                $element->getPatientEmail(),
-                $element->getStatus(),
-                $element->getDuree(),
-                $element->getDateHF(),
-                $element->getDateC(),
-                $element->getMotifVisite()
-            );
-        }
-        return $rdv;
+   public function ListerRDVID(string $pid): array
+{
+    $rdvs = $this->rendezVousRepository->GetRdvsbyPrat($pid);
+    $rdv = [];
+    foreach ($rdvs as $element) {
+        $rdv[] = new RendezVousDTOID(
+            $element->getId(),
+            $element->getPraticien()->getId(),
+            $element->getPatientId(),
+            $element->getPatientEmail(),
+            $element->getStatus(),
+            (int)$element->getDuree(),        
+            $element->getDateHD(),           
+            $element->getDateHF(),
+            $element->getDateC(),
+            $element->getMotifVisite()
+        );
     }
+    return $rdv;
+}
 
     public function creerRendezVous(InputRendezVousDTO $dto): RendezVousDTO
     {
@@ -164,34 +165,80 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $this->rendezVousRepository->update($rdv);
     }
+    public function HonorerRDV(string $idRdv): void
+    {
+        $rdv = $this->rendezVousRepository->findById($idRdv);
+
+        if ($rdv === null) {
+            throw new Exception("Rendez-vous introuvable");
+        }
+
+        $rdv->honorer();
+
+        $this->rendezVousRepository->update($rdv);
+    }
+    public function NePasHonorerRDV(string $idRdv): void
+    {
+        $rdv = $this->rendezVousRepository->findById($idRdv);
+
+        if ($rdv === null) {
+            throw new Exception("Rendez-vous introuvable");
+        }
+
+        $rdv->nepashonorer();
+
+        $this->rendezVousRepository->update($rdv);
+    }
 
     public function consulterAgenda(string $praticienId, string $dateDebut, string $dateFin): array
-    {
-
-        if ($dateDebut === null) {
-            $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
-        }
-        if ($dateFin === null) {
-            $dateFin = (new \DateTime())->format('Y-m-d 23:59:59');
-        }
-
-        $rdvs = $this->rendezVousRepository->findByPraticienAndPeriode($praticienId, $dateDebut, $dateFin);
-
-        $result = [];
-        foreach ($rdvs as $rdv) {
-            $result[] = new RendezVousDTOID(
-                $rdv->getId(),
-                $rdv->getPraticien()->getId(),
-                $rdv->getPatientId(),
-                $rdv->getPatientEmail(),
-                $rdv->getStatus(),
-                $rdv->getDuree(),
-                $rdv->getDateHF(),
-                $rdv->getDateC(),
-                $rdv->getMotifVisite()
-            );
-        }
-
-        return $result;
+{
+    if ($dateDebut === null) {
+        $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
     }
+    if ($dateFin === null) {
+        $dateFin = (new \DateTime())->format('Y-m-d 23:59:59');
+    }
+
+    $rdvs = $this->rendezVousRepository->findByPraticienAndPeriode($praticienId, $dateDebut, $dateFin);
+
+    $result = [];
+    foreach ($rdvs as $rdv) {
+        $result[] = new RendezVousDTOID(
+            $rdv->getId(),
+            $rdv->getPraticien()->getId(),
+            $rdv->getPatientId(),
+            $rdv->getPatientEmail(),
+            $rdv->getStatus(),
+            (int)$rdv->getDuree(),        
+            $rdv->getDateHD(),          
+            $rdv->getDateHF(),
+            $rdv->getDateC(),
+            $rdv->getMotifVisite()
+        );
+    }
+
+    return $result;
+}
+
+    public function consulterRendezVous(string $idRdv): ?RendezVousDTOID
+{
+    $rdv = $this->rendezVousRepository->findById($idRdv);
+    
+    if ($rdv === null) {
+        return null;
+    }
+    
+    return new RendezVousDTOID(
+        $rdv->getId(),
+        $rdv->getPraticien()->getId(),
+        $rdv->getPatientId(),
+        $rdv->getPatientEmail(),
+        $rdv->getStatus(),                    
+        (int)$rdv->getDuree(),                
+        $rdv->getDateHD(),                   
+        $rdv->getDateHF(),
+        $rdv->getDateC(),
+        $rdv->getMotifVisite()
+    );
+}
 }

@@ -20,8 +20,8 @@ class ListerRendezVousAction
         try {
             $rdvs = $this->service_rendez_vous->ListerRendezVous();
             $data = [
-                'type' => 'application/json',
-                'count' => count($rdvs),
+                'type' => 'resources',
+                // 'count' => count($rdvs),
                 'rdvs' => $rdvs,
                 'links' => [
                     'self' => ['href' => 'http://localhost:6080/rdvs']

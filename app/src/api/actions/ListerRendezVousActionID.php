@@ -22,11 +22,14 @@ public function __invoke(Request $request, Response $response): Response
     
     // Ajout HATEOAS
     $data = [
-         'type' => 'application/json',
-        'rdvs' => $rdvs,
+        'type' => 'ressource',
+        'rendez_vous' => $rdvs,
         'links' => [
             'self' => ['href' => "http://localhost:6080/rdvs/id/$id"],
             'praticien' => ['href' => "http://localhost:6080/prat/id/$id"]
+            // 'patient' => ['href' => "http://localhost:6080/prat/id/$id"],
+            // 'annuler' => ['href' => "http://localhost:6080/prat/id/$id"],
+            // 'honorer' => ['href' => "http://localhost:6080/prat/id/$id"]
         ]
     ];
     

@@ -56,6 +56,39 @@ class RendezVous
 
         $this->status = 5;
     }
+    public function honorer(): void
+    {
+        if ($this->status === 5) {
+            throw new Exception("Le rendez-vous est déjà annulé");
+        }
+        else if ($this->status === 3) {
+            throw new Exception("Le rendez-vous est déjà honoré");
+        }
+
+        $dateRdv = new \DateTime($this->date_heure_debut);
+        $maintenant = new \DateTime();
+        
+        if ($dateRdv <= $maintenant) {
+            throw new Exception("Impossible d'annuler un rendez-vous passé");
+        }
+
+        $this->status = 3;
+    }
+    public function nepashonorer(): void
+    {
+        if ($this->status === 5) {
+            throw new Exception("Le rendez-vous est déjà annulé");
+        }
+
+        $dateRdv = new \DateTime($this->date_heure_debut);
+        $maintenant = new \DateTime();
+        
+        if ($dateRdv <= $maintenant) {
+            throw new Exception("Impossible d'annuler un rendez-vous passé");
+        }
+
+        $this->status = 4;
+    }
 
 
     public function getId(): string

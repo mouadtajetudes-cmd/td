@@ -8,5 +8,8 @@ interface ServiceRendezVousInterface
     public function ListerRDVID(string $pid): array;
     public function creerRendezVous(InputRendezVousDTO $dto): RendezVousDTO;
     public function annulerRendezVous(string $idRdv): void;
+    public function HonorerRDV(string $idRdv): void;
+    public function NePasHonorerRDV(string $idRdv): void;
     public function consulterAgenda(string $praticienId, string $dateDebut, string $dateFin): array;
+    public function consulterRendezVous(string $idRdv): ?RendezVousDTOID;
 }
