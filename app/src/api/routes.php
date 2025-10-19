@@ -12,29 +12,50 @@ use toubilib\api\actions\ListerRendezVousAction;
 use toubilib\api\actions\ListerRendezVousActionID;  
 use toubilib\api\actions\NePasHonorerRendezVousAction;
 use toubilib\api\middlewares\ValidationRendezVousMiddleware;
+use toubilib\api\actions\SigninAction;
+use toubilib\api\actions\RefreshTokenAction;
+use toubilib\api\middlewares\AuthnMiddleware;
+use toubilib\api\middlewares\AuthzPraticienMiddleware;
+use toubilib\api\middlewares\AuthzRendezVousMiddleware;
 
 return function(\Slim\App $app): \Slim\App {
+
+    // Auth routes
+    $app->post('/auth/signin', SigninAction::class);
+    $app->post('/auth/refresh', RefreshTokenAction::class);
     
     // Praticiens
     $app->get('/praticiens', ListerPraticiensAction::class);
     $app->get('/praticiens/{id}', ListerPraticienIdAction::class);
-    $app->get('/praticiens/{id}/agenda', ConsulterAgendaAction::class);
 
-    
+
+    $app->get('/praticiens/{id}/agenda', ConsulterAgendaAction::class)
+        ->add(AuthzPraticienMiddleware::class)
+        ->add(AuthnMiddleware::class);
     // Rdvs
-    $app->get('/rdvs', ListerRendezVousAction::class);
-    
-    $app->get('/rdvs/{id}', ConsulterRendezVousAction::class);
-    
+    // $app->get('/rdvs', ListerRendezVousAction::class)
+
+    $app->get('/rdvs/{id}', ConsulterRendezVousAction::class)
+       ->add(AuthzRendezVousMiddleware::class)
+       ->add(AuthnMiddleware::class);
+
     $app->get('/praticiens/{id}/rdvs', ListerRendezVousActionID::class);  
     
     $app->post('/rdvs', CreerRendezVousAction::class)
-        ->add(ValidationRendezVousMiddleware::class);
+        ->add(ValidationRendezVousMiddleware::class)
+        ->add(AuthnMiddleware::class);
     
-    $app->patch('/rdvs/{id}/annuler', AnnulerRendezVousAction::class);
-    $app->patch('/rdvs/{id}/honorer', HonorerRendezVousAction::class);
-    $app->patch('/rdvs/{id}/ne-pas-honorer', NePasHonorerRendezVousAction::class);
-    
+    $app->patch('/rdvs/{id}/annuler', AnnulerRendezVousAction::class)
+         ->add(AuthzRendezVousMiddleware::class)
+        ->add(AuthnMiddleware::class);
+
+    $app->patch('/rdvs/{id}/honorer', HonorerRendezVousAction::class)
+        ->add(AuthzRendezVousMiddleware::class)
+        ->add(AuthnMiddleware::class);
+
+    $app->patch('/rdvs/{id}/ne-pas-honorer', NePasHonorerRendezVousAction::class)
+        ->add(AuthzRendezVousMiddleware::class)
+        ->add(AuthnMiddleware::class);
     
     return $app;
 };

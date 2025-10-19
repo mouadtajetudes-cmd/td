@@ -4,6 +4,7 @@ declare(strict_types=1);
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
+use toubilib\api\middlewares\CorsMiddleware;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -29,5 +30,12 @@ $errorMw = $app->addErrorMiddleware(
 $errorMw->getDefaultErrorHandler()->forceContentType('application/json');
 
 $app = (require __DIR__ . '/../src/api/routes.php')($app);
+
+$app->add(new CorsMiddleware());
+
+// Gérer les requêtes OPTIONS préliminaires (pre-flight)
+$app->options('/{routes:.+}', function ($request, $response) {
+    return $response;
+});
 
 return $app;

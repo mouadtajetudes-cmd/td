@@ -1,6 +1,17 @@
 <?php
 
+use toubilib\api\middlewares\AuthzPatientMiddleware;
+use toubilib\api\middlewares\AuthzPraticienMiddleware;
+use toubilib\api\middlewares\AuthzRendezVousMiddleware;
+use toubilib\api\middlewares\CorsMiddleware;
+use toubilib\api\provider\AuthProviderInterface;
+use toubilib\api\provider\jwt\JwtAuthProvider;
+use toubilib\api\provider\jwt\JwtManager;
+use toubilib\api\provider\jwt\JwtManagerInterface;
 use toubilib\core\application\ports\api\AuthnServiceInterface;
+use toubilib\core\application\ports\api\AuthzPatientServiceInterface;
+use toubilib\core\application\ports\api\AuthzPraticienServiceInterface;
+use toubilib\core\application\ports\api\AuthzRDVServiceInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\PraticienRepositoryInterface;
 use toubilib\core\application\ports\api\ServicePraticienInterface;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
@@ -30,6 +41,7 @@ return [
 
         return new PDO($dsn, $user, $pass);
     },
+    
     'rdv_db' => static function ($c): PDO {
         $dbrConfig = $c->get('settings')['db_rdv'];
         $driver  = $dbrConfig['driver'] ?? 'pgsql';
@@ -45,6 +57,7 @@ return [
 
         return new PDO($dsn, $user, $pass);
     },
+    
     'toubiauth_db' => static function ($c): PDO {
         $dbaConfig = $c->get('settings')['db_auth'];
         $driver  = $dbaConfig['driver'] ?? 'pgsql';
@@ -61,34 +74,99 @@ return [
         return new PDO($dsn, $user, $pass);
     },
     
-
-    // Repository
-    PraticienRepositoryInterface::class =>  function ($c) {
+    // Repositories
+    PraticienRepositoryInterface::class => function ($c) {
         return new PDOPraticienRepository($c->get('praticien_db'));
     },
-    RendezVousRepositoryInterface::class =>  function ($a){
+    
+    RendezVousRepositoryInterface::class => function ($a) {
         return new PDORendezVousRepository(
             $a->get('rdv_db'),
             $a->get(PraticienRepositoryInterface::class)
         );
     },
-        UserRepositoryInterface::class => function ($c) {
+    
+    UserRepositoryInterface::class => function ($c) {
         return new UserRepository($c->get('toubiauth_db'));
     },
     
-
-    ServicePraticienInterface::class =>  function ($c) {
+    // JWT
+    JwtManagerInterface::class => function () {
+        //Pas de valeur par défaut, obligatoire, on peut ni coder ni décoder sans cette clé 
+        $jwtSecret = $_ENV['JWT_SECRET'];
+        $accessExpiration = 3600; 
+        $refreshExpiration = 86400;
+        
+        $jwtManager = new JwtManager($jwtSecret, $accessExpiration, $refreshExpiration);
+        $jwtManager->setIssuer('toubilib');
+        
+        return $jwtManager;
+    },
+    
+    // Services
+    ServicePraticienInterface::class => function ($c) {
         return new ServicePraticien($c->get(PraticienRepositoryInterface::class));
     },
-    ServiceRendezVousInterface::class =>  function ($c) {
+    
+    ServiceRendezVousInterface::class => function ($c) {
         return new ServiceRendezVous(
             $c->get(RendezVousRepositoryInterface::class),
             $c->get(PraticienRepositoryInterface::class) 
         );
     },
-        AuthnServiceInterface::class => function ($c) {
+    
+    AuthnServiceInterface::class => function ($c) {
         return new AuthnService(
             $c->get(UserRepositoryInterface::class)
         );
+    },
+    
+    // Auth Provider
+    AuthProviderInterface::class => function ($c) {
+        return new JwtAuthProvider(
+            $c->get(AuthnServiceInterface::class),
+            $c->get(JwtManagerInterface::class)
+        );
+    },
+
+    // Services d'autorisation
+    AuthzPraticienServiceInterface::class => function ($c) {
+        return new AuthzPraticienServiceInterface(
+            $c->get(PraticienRepositoryInterface::class)
+        );
+    },
+    
+    AuthzPatientServiceInterface::class => function ($c) {
+        return new AuthzPatientServiceInterface();
+    },
+    
+    AuthzRDVServiceInterface::class => function ($c) {
+        return new AuthzRDVServiceInterface(
+            $c->get(RendezVousRepositoryInterface::class)
+        );
+    },
+    
+    // Middlewares d'autorisation
+    AuthzPraticienMiddleware::class => function ($c) {
+        return new AuthzPraticienMiddleware(
+            $c->get(AuthzPraticienServiceInterface::class)
+        );
+    },
+    
+    AuthzPatientMiddleware::class => function ($c) {
+        return new AuthzPatientMiddleware(
+            $c->get(AuthzPatientServiceInterface::class)
+        );
+    },
+    
+    AuthzRendezVousMiddleware::class => function ($c) {
+        return new AuthzRendezVousMiddleware(
+            $c->get(AuthzRDVServiceInterface::class)
+        );
+    },
+    
+    // Middleware CORS
+    CorsMiddleware::class => function ($c) {
+        return new CorsMiddleware();
     },
 ];
