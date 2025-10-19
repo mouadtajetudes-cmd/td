@@ -33,7 +33,7 @@ $app = (require __DIR__ . '/../src/api/routes.php')($app);
 
 $app->add(new CorsMiddleware());
 
-// Gérer les requêtes OPTIONS préliminaires (pre-flight)
+// pre-flight
 $app->options('/{routes:.+}', function ($request, $response) {
     return $response;
 });
