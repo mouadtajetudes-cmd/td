@@ -12,4 +12,5 @@ interface ServiceRendezVousInterface
     public function NePasHonorerRDV(string $idRdv): void;
     public function consulterAgenda(string $praticienId, string $dateDebut, string $dateFin): array;
     public function consulterRendezVous(string $idRdv): ?RendezVousDTOID;
+     public function listerCreneauxOccupes(string $praticienId, ?string $dateDebut = null, ?string $dateFin = null): array;
 }

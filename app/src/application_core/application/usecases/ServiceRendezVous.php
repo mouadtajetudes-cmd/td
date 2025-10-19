@@ -241,4 +241,28 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $rdv->getMotifVisite()
     );
 }
+ public function listerCreneauxOccupes(string $praticienId, ?string $dateDebut = null, ?string $dateFin = null): array
+    {
+        if ($dateDebut === null) {
+            $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
+        }
+        if ($dateFin === null) {
+            $dateFin = (new \DateTime('+1 month'))->format('Y-m-d 23:59:59');
+        }
+
+        $rdvs = $this->rendezVousRepository->findByPraticienAndPeriode($praticienId, $dateDebut, $dateFin);
+
+        $creneauxOccupes = [];
+        foreach ($rdvs as $rdv) {
+            if ($rdv->getStatus() !== 5) {
+                $creneauxOccupes[] = [
+                    'date_debut' => $rdv->getDateHD(),
+                    'date_fin' => $rdv->getDateHF(),
+                    'disponible' => false
+                ];
+            }
+        }
+
+        return $creneauxOccupes;
+    }
 }

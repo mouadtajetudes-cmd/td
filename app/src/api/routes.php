@@ -6,6 +6,7 @@ use toubilib\api\actions\ConsulterAgendaAction;
 use toubilib\api\actions\ConsulterRendezVousAction;
 use toubilib\api\actions\CreerRendezVousAction;
 use toubilib\api\actions\HonorerRendezVousAction;
+use toubilib\api\actions\ListerCreneauxOccAction;
 use toubilib\api\actions\ListerPraticienIdAction;
 use toubilib\api\actions\ListerPraticiensAction;
 use toubilib\api\actions\ListerRendezVousAction;
@@ -56,6 +57,8 @@ return function(\Slim\App $app): \Slim\App {
     $app->patch('/rdvs/{id}/ne-pas-honorer', NePasHonorerRendezVousAction::class)
         ->add(AuthzRendezVousMiddleware::class)
         ->add(AuthnMiddleware::class);
+
+    $app->get('/praticiens/{id}/creneaux', ListerCreneauxOccAction::class); 
     
     return $app;
 };

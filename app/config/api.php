@@ -5,6 +5,7 @@ use toubilib\api\actions\ConsulterAgendaAction;
 use toubilib\api\actions\ConsulterRendezVousAction;
 use toubilib\api\actions\CreerRendezVousAction;
 use toubilib\api\actions\HonorerRendezVousAction;
+use toubilib\api\actions\ListerCreneauxOccAction;
 use toubilib\api\actions\ListerPraticienAction;
 use toubilib\api\actions\ListerPraticienIdAction;
 use toubilib\api\actions\ListerPraticiensAction;
@@ -89,6 +90,11 @@ return [
     },
     NePasHonorerRendezVousAction::class => function ($c) {
         return new NePasHonorerRendezVousAction(
+            $c->get(ServiceRendezVousInterface::class)
+        );
+    },
+    ListerCreneauxOccAction::class => function ($c) {
+        return new ListerCreneauxOccAction(
             $c->get(ServiceRendezVousInterface::class)
         );
     },
